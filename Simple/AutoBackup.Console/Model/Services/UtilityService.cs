@@ -1,5 +1,9 @@
-﻿using System;
+﻿using AutoBackup.ConsoleApp.Model.Dto;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.OleDb;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -8,27 +12,44 @@ using System.Threading.Tasks;
 
 namespace AutoBackup.ConsoleApp.Model.Services
 {
-public    class UtilityService
+    public class UtilityService
     {
-     Task<bool> checkConnectinString(string connectionString)
+        public bool checkConnectinString(string connectionString)
         {
+
             try
             {
-                IPAddress ipAddress = Dns.GetHostEntry(connectionString).AddressList[0];
-                IPEndPoint ipEndPoint = new IPEndPoint(ipAddress, 1433);
-
-                using (TcpClient tcpClient = new TcpClient())
+                 var connectionModel = GetConnectionDetiles(connectionString);
+                using (var connection = new SqlConnection(connectionString))
                 {
-                    tcpClient.Connect(ipEndPoint);
+                    using (var command = new SqlCommand($"SELECT db_id('{connectionModel.InitialCatalog}')", connection))
+                    {
+                        connection.Open();
+                        return (command.ExecuteScalar() != DBNull.Value);
+                    }
                 }
-
-                return Task.FromResult(true);
             }
             catch (Exception ex)
             {
-          throw new Exception($"TestViaTcp to server {connectionString} failed '{ex.GetType().Name}': {ex.Message}");
-            }
 
+                throw;
+            }
+            return true;
         }
+
+        public ConnectionDetilesModel GetConnectionDetiles(string connection)
+        {
+          
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connection);
+            return new ConnectionDetilesModel() { 
+            DataSource=builder.DataSource,
+            InitialCatalog=builder.InitialCatalog,
+            Password=builder.Password,
+            UserID=builder.UserID
+            
+            };
+        }
+
     }
+
 }

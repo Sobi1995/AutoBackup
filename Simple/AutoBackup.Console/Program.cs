@@ -1,4 +1,5 @@
 ﻿using AutoBackup.ConsoleApp.Model.Dto;
+using AutoBackup.ConsoleApp.Model.Services;
 using System;
 
 namespace AutoBackup.ConsoleApp
@@ -7,10 +8,14 @@ namespace AutoBackup.ConsoleApp
     {
         static void Main(string[] args)
         {
+            var service = new UtilityService();
             var connectionDetiles=new GetConnectionConfigInput();
             Console.Write("Please enter the connection string : ");
             connectionDetiles.DataBaseConnection = Console.ReadLine();
+            var validConnectionString = service.checkConnectinString(connectionDetiles.DataBaseConnection);
+            Console.WriteLine(validConnectionString);
 
+            Console.ReadKey();
 
         }
     }
