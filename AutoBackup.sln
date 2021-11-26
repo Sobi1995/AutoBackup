@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoBackup.ConsoleApp", "Simple\AutoBackup.Console\AutoBackup.ConsoleApp.csproj", "{47E2883C-7283-432B-ABB6-E9860B801B59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBackup.GoogleDrive", "AutoBackup.GoogleDrive\AutoBackup.GoogleDrive.csproj", "{2623BD45-7E04-4446-8C62-30AE4DA3248A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoBackup.Http", "AutoBackup.GoogleDrive\AutoBackup.Http.csproj", "{2623BD45-7E04-4446-8C62-30AE4DA3248A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBackup.Core", "AutoBackup.Core\AutoBackup.Core.csproj", "{0E9B0EC0-48D2-4706-B987-E899C91D3BD6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2623BD45-7E04-4446-8C62-30AE4DA3248A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2623BD45-7E04-4446-8C62-30AE4DA3248A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2623BD45-7E04-4446-8C62-30AE4DA3248A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E9B0EC0-48D2-4706-B987-E899C91D3BD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E9B0EC0-48D2-4706-B987-E899C91D3BD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E9B0EC0-48D2-4706-B987-E899C91D3BD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E9B0EC0-48D2-4706-B987-E899C91D3BD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

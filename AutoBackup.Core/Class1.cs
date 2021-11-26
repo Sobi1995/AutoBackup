@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoBackup.GoogleDrive
+namespace AutoBackup.Core
 {
     public class Class1
     {
