@@ -9,15 +9,12 @@ namespace AutoBackup.ConsoleApp
     {
         static void  Main(string[] args)
         {
-
-            //setup our DI
-            var serviceProvider = new ServiceCollection()
-                 .AddSingleton<IBackupService, BackupService>()
-                 .AddSingleton<IUtilityService, UtilityService>()
-                 .AddSingleton<IProgressBar, ProgressBar>()
-                .BuildServiceProvider();
-
+            var serviceProvider = RegisterService();
             var _progressBar = serviceProvider.GetService<IProgressBar>();
+
+            
+
+          
             _progressBar.ProgressBarCiz(2, 1, 100, 0, ConsoleColor.White);
             var service = new UtilityService();
             var connectionDetiles=new GetConnectionConfigInput();
@@ -31,6 +28,14 @@ namespace AutoBackup.ConsoleApp
 
             Console.ReadKey();
 
+        }
+
+       static ServiceProvider RegisterService() {
+          return  new ServiceCollection()
+                    .AddSingleton<IBackupService, BackupService>()
+                    .AddSingleton<IUtilityService, UtilityService>()
+                    .AddSingleton<IProgressBar, ProgressBar>()
+                   .BuildServiceProvider();
         }
 
      
