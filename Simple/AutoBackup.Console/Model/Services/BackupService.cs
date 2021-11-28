@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AutoBackup.ConsoleApp.Model.Services
 {
-    public class BackupService
+    public class BackupService: IBackupService
     {
         private readonly string _connectionString;
         private readonly string _backupFolderFullPath;
@@ -53,7 +53,7 @@ namespace AutoBackup.ConsoleApp.Model.Services
             }
         }
 
-        private IEnumerable<string> GetAllUserDatabases()
+        public IEnumerable<string> GetAllUserDatabases()
         {
             var databases = new List<String>();
 
@@ -81,7 +81,7 @@ namespace AutoBackup.ConsoleApp.Model.Services
             return databases;
         }
 
-        private string BuildBackupPathWithFilename(string databaseName)
+        public string BuildBackupPathWithFilename(string databaseName)
         {
             string filename = string.Format("{0}-{1}.bak", databaseName, DateTime.Now.ToString("yyyy-MM-dd"));
 

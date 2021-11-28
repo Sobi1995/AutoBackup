@@ -1,16 +1,24 @@
 ﻿using AutoBackup.ConsoleApp.Model.Dto;
 using AutoBackup.ConsoleApp.Model.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace AutoBackup.ConsoleApp
 {
-    class Program
+      class Program
     {
-        static void Main(string[] args)
+        static void  Main(string[] args)
         {
 
+            //setup our DI
+            var serviceProvider = new ServiceCollection()
+                 .AddSingleton<IBackupService, BackupService>()
+                 .AddSingleton<IUtilityService, UtilityService>()
+                 .AddSingleton<IProgressBar, ProgressBar>()
+                .BuildServiceProvider();
 
-
+            var _progressBar = serviceProvider.GetService<IProgressBar>();
+            _progressBar.ProgressBarCiz(2, 1, 100, 0, ConsoleColor.White);
             var service = new UtilityService();
             var connectionDetiles=new GetConnectionConfigInput();
         
@@ -24,5 +32,7 @@ namespace AutoBackup.ConsoleApp
             Console.ReadKey();
 
         }
+
+     
     }
 }

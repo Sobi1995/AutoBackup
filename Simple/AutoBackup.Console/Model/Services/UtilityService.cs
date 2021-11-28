@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AutoBackup.ConsoleApp.Model.Services
 {
-    public class UtilityService
+    public class UtilityService: IUtilityService
     {
         public bool checkConnectinString(string connectionString)
         {
