@@ -1,22 +1,19 @@
 ﻿using AutoBackup.ConsoleApp.Model.Dto;
-using AutoBackup.ConsoleApp.Model.Services;
+using AutoBackup.Core.Servises.Common;
+using AutoBackup.Database;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace AutoBackup.ConsoleApp
 {
-      class Program
+    class Program
     {
         static void  Main(string[] args)
         {
             var serviceProvider = RegisterService();
-            var _progressBar = serviceProvider.GetService<IProgressBar>();
-
-            
-
-          
-            _progressBar.ProgressBarCiz(2, 1, 100, 0, ConsoleColor.White);
-            var service = new UtilityService();
+     
+ 
+            var service = new ConnectionService();
             var connectionDetiles=new GetConnectionConfigInput();
         
             Console.Write("Please enter the connection string : ");
@@ -33,7 +30,7 @@ namespace AutoBackup.ConsoleApp
        static ServiceProvider RegisterService() {
           return  new ServiceCollection()
                     .AddSingleton<IBackupService, BackupService>()
-                    .AddSingleton<IUtilityService, UtilityService>()
+                    .AddSingleton<IConnectionService, ConnectionService>()
                     .AddSingleton<IProgressBar, ProgressBar>()
                    .BuildServiceProvider();
         }

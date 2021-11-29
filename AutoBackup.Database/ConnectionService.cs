@@ -10,9 +10,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutoBackup.ConsoleApp.Model.Services
+namespace AutoBackup.Database
 {
-    public class UtilityService: IUtilityService
+    public class  ConnectionService : IConnectionService
     {
         public bool checkConnectinString(string connectionString)
         {

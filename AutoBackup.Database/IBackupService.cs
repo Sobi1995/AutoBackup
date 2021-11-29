@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutoBackup.ConsoleApp.Model.Services
+namespace AutoBackup.Database
 {
   public  interface IBackupService
     {
