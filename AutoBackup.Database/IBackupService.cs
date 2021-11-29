@@ -8,9 +8,11 @@ namespace AutoBackup.Database
 {
   public  interface IBackupService
     {
-        public void BackupAllUserDatabases();
-        public void BackupDatabase(string databaseName);
-        public IEnumerable<string> GetAllUserDatabases();
-        public string BuildBackupPathWithFilename(string databaseName);
+          void BackupAllUserDatabases();
+          IEnumerable<string> GetAllUserDatabases();
+          string BuildBackupPathWithFilename(string databaseName);
+          void InitBackupDatabase(string connectionString, string backupFolderFullPath);
+         void BackupDatabase(string connectionString);
+
     }
 }

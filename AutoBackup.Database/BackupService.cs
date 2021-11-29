@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoBackup.ConsoleApp.Model.Dto;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -11,14 +12,13 @@ namespace AutoBackup.Database
 {
     public class BackupService: IBackupService
     {
-        private readonly string _connectionString;
-        private readonly string _backupFolderFullPath;
+        private   string _connectionString;
+        private   string _backupFolderFullPath;
         private readonly string[] _systemDatabaseNames = { "master", "tempdb", "model", "msdb" };
 
-        public BackupService(string connectionString, string backupFolderFullPath)
+        public BackupService()
         {
-            _connectionString = connectionString;
-            _backupFolderFullPath = backupFolderFullPath;
+          
         }
 
         public void BackupAllUserDatabases()
@@ -29,14 +29,18 @@ namespace AutoBackup.Database
             }
         }
 
-        public void BackupDatabase(string databaseName)
+        public void BackupDatabase(string connectionString)
         {
-            string filePath = BuildBackupPathWithFilename(databaseName);
+
+          var connectionModel=   checkConnectinString(connectionString);
+            string filePath = BuildBackupPathWithFilename(connectionModel.InitialCatalog);
+            try
+            {
 
            
             using (var connection = new SqlConnection(_connectionString))
             {
-                var query = String.Format("BACKUP DATABASE [{0}] TO DISK='{1}'", databaseName, filePath.Trim());
+                var query = String.Format("BACKUP DATABASE [{0}] TO DISK='{1}'", connectionModel.InitialCatalog, filePath.Trim());
            
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -50,6 +54,12 @@ namespace AutoBackup.Database
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
+            }
+            }
+            catch (Exception ex)
+            {
+
+                throw new System.ArgumentException(ex.Message);
             }
         }
 
@@ -86,6 +96,54 @@ namespace AutoBackup.Database
             string filename = string.Format("{0}-{1}.bak", databaseName, DateTime.Now.ToString("yyyy-MM-dd"));
 
             return Path.Combine(_backupFolderFullPath, filename);
+        }
+
+     
+
+        public void InitBackupDatabase(string connectionString, string backupFolderFullPath)
+        {
+            _connectionString = connectionString;
+            _backupFolderFullPath = backupFolderFullPath;
+        }
+
+
+        public ConnectionDetilesModel checkConnectinString(string connectionString)
+        {
+
+            try
+            {
+                var connectionModel = GetConnectionDetiles(connectionString);
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    using (var command = new SqlCommand($"SELECT db_id('{connectionModel.InitialCatalog}')", connection))
+                    {
+                        connection.Open();
+                        var isConnect = (command.ExecuteScalar() != DBNull.Value);
+                        Console.WriteLine("Connection is valid ");
+                        return GetConnectionDetiles(connectionString);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new System.ArgumentException($"Connection not Valid {ex.Message}");
+            }
+
+        }
+
+        private ConnectionDetilesModel GetConnectionDetiles(string connection)
+        {
+
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connection);
+            return new ConnectionDetilesModel()
+            {
+                DataSource = builder.DataSource,
+                InitialCatalog = builder.InitialCatalog,
+                Password = builder.Password,
+                UserID = builder.UserID
+
+            };
         }
     }
 }

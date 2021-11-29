@@ -11,17 +11,19 @@ namespace AutoBackup.ConsoleApp
         static void  Main(string[] args)
         {
             var serviceProvider = RegisterService();
-     
+            var _backupService = serviceProvider.GetService<IBackupService>();
  
-            var service = new ConnectionService();
+
+         
             var connectionDetiles=new GetConnectionConfigInput();
         
             Console.Write("Please enter the connection string : ");
             connectionDetiles.DataBaseConnection = Console.ReadLine();
-            var backupService = new BackupService(connectionDetiles.DataBaseConnection,"F:\\AutoBackup\\");
-            backupService.BackupDatabase("Semicolon");
-            var validConnectionString = service.checkConnectinString(connectionDetiles.DataBaseConnection);
-            Console.WriteLine(validConnectionString);
+
+            _backupService.InitBackupDatabase(connectionDetiles.DataBaseConnection, "F:\\AutoBackup\\");
+            _backupService.BackupDatabase(connectionDetiles.DataBaseConnection);
+    
+         
 
             Console.ReadKey();
 
@@ -30,7 +32,7 @@ namespace AutoBackup.ConsoleApp
        static ServiceProvider RegisterService() {
           return  new ServiceCollection()
                     .AddSingleton<IBackupService, BackupService>()
-                    .AddSingleton<IConnectionService, ConnectionService>()
+            
                     .AddSingleton<IProgressBar, ProgressBar>()
                    .BuildServiceProvider();
         }
