@@ -1,6 +1,6 @@
-﻿using AutoBackup.ConsoleApp.Model.Dto;
-using AutoBackup.Core.Servises.Common;
+﻿using AutoBackup.Core.Servises.Common;
 using AutoBackup.Database;
+using AutoBackup.DatabaseModel.Dto;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -13,15 +13,11 @@ namespace AutoBackup.ConsoleApp
             var serviceProvider = RegisterService();
             var _backupService = serviceProvider.GetService<IBackupService>();
  
-
-         
             var connectionDetiles=new GetConnectionConfigInput();
         
             Console.Write("Please enter the connection string : ");
             connectionDetiles.DataBaseConnection = Console.ReadLine();
-
-            _backupService.InitBackupDatabase(connectionDetiles.DataBaseConnection, "F:\\AutoBackup\\");
-            _backupService.BackupDatabase(connectionDetiles.DataBaseConnection);
+            _backupService.BackupDatabase(connectionDetiles.DataBaseConnection, string.Empty,"asdasdasfcsa assa");
     
          
 

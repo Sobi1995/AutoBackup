@@ -1,12 +1,11 @@
 ﻿using AutoBackup.ConsoleApp.Model.Dto;
+using AutoBackup.Core.Servises.Common;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoBackup.Database
 {
@@ -15,23 +14,27 @@ namespace AutoBackup.Database
         private   string _connectionString;
         private   string _backupFolderFullPath;
         private readonly string[] _systemDatabaseNames = { "master", "tempdb", "model", "msdb" };
-
-        public BackupService()
+        public readonly IProgressBar _progressBar;
+        public BackupService(IProgressBar progressBar)
         {
-          
+            _progressBar = progressBar;
+  
         }
 
-        public void BackupAllUserDatabases()
-        {
-            foreach (string databaseName in GetAllUserDatabases())
-            {
-                BackupDatabase(databaseName);
-            }
-        }
+        //private void BackupAllUserDatabases()
+        //{
+        //    foreach (string databaseName in GetAllUserDatabases())
+        //    {
+        //        //BackupDatabase(databaseName);
+        //    }
+        //}
 
-        public void BackupDatabase(string connectionString)
-        {
 
+
+
+        public void BackupDatabase(string connectionString, string backupFolderFullPath, string googleDriveKey)
+        {
+            InitBackupDatabase(connectionString, backupFolderFullPath);
           var connectionModel=   checkConnectinString(connectionString);
             string filePath = BuildBackupPathWithFilename(connectionModel.InitialCatalog);
             try
@@ -63,7 +66,7 @@ namespace AutoBackup.Database
             }
         }
 
-        public IEnumerable<string> GetAllUserDatabases()
+        private IEnumerable<string> GetAllUserDatabases()
         {
             var databases = new List<String>();
 
@@ -91,23 +94,23 @@ namespace AutoBackup.Database
             return databases;
         }
 
-        public string BuildBackupPathWithFilename(string databaseName)
+        private string BuildBackupPathWithFilename(string databaseName)
         {
             string filename = string.Format("{0}-{1}.bak", databaseName, DateTime.Now.ToString("yyyy-MM-dd"));
 
             return Path.Combine(_backupFolderFullPath, filename);
         }
 
-     
 
-        public void InitBackupDatabase(string connectionString, string backupFolderFullPath)
+
+        private void InitBackupDatabase(string connectionString, string backupFolderFullPath)
         {
             _connectionString = connectionString;
             _backupFolderFullPath = backupFolderFullPath;
         }
 
 
-        public ConnectionDetilesModel checkConnectinString(string connectionString)
+        private ConnectionDetilesModel checkConnectinString(string connectionString)
         {
 
             try
