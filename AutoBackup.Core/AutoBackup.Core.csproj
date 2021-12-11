@@ -5,8 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Servises\Messages\" />
-    <Folder Include="Servises\Logs\" />
+    <Compile Remove="Servises\Logs\**" />
+    <Compile Remove="Servises\Messages\**" />
+    <EmbeddedResource Remove="Servises\Logs\**" />
+    <EmbeddedResource Remove="Servises\Messages\**" />
+    <None Remove="Servises\Logs\**" />
+    <None Remove="Servises\Messages\**" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using AutoBackup.Core.Servises;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
@@ -15,14 +16,14 @@ namespace AutoBackup.Http.GoogleDrive
 {
     public class GoogleDriveHttpService : IGoogleDriveHttpService
     {
-          string[] Scopes = { Scope.Drive };
-          string ApplicationName = "Drive API .NET Quickstart";
+        string[] Scopes = { Scope.Drive };
+        string ApplicationName = "Drive API .NET Quickstart";
         public GoogleDriveHttpService()
         {
 
         }
 
-          string CreateFolder(string folderName)
+        private string CreateFolder(string folderName)
         {
             var service = GetService();
             bool exists = Exists(folderName);
@@ -37,7 +38,7 @@ namespace AutoBackup.Http.GoogleDrive
             return request.Execute().Id;
         }
 
-          string CreateFolderParent(string folderName, string parent)
+        private string CreateFolderParent(string folderName, string parent)
         {
             var service = GetService();
             var driveFolder = new Google.Apis.Drive.v3.Data.File();
@@ -48,7 +49,7 @@ namespace AutoBackup.Http.GoogleDrive
             var file = command.Execute();
             return file.Id;
         }
-          bool Exists(string name)
+        private bool Exists(string name)
         {
 
             var service = GetService();
@@ -67,7 +68,7 @@ namespace AutoBackup.Http.GoogleDrive
         }
 
 
-      DriveService GetService()
+        private DriveService GetService()
         {
 
             UserCredential credential;
@@ -129,7 +130,7 @@ namespace AutoBackup.Http.GoogleDrive
 
         }
 
-     string  UploadFile (Stream file, string fileName, string fileMime, string folder, string fileDescription)
+        private string UploadFile(Stream file, string fileName, string fileMime, string folder, string fileDescription)
         {
             DriveService service = GetService();
 
@@ -151,7 +152,7 @@ namespace AutoBackup.Http.GoogleDrive
             return request.ResponseBody.Id;
         }
 
-        void DeleteFile(string fileId)
+        private void DeleteFile(string fileId)
         {
             var service = GetService();
             var command = service.Files.Delete(fileId);
@@ -179,6 +180,15 @@ namespace AutoBackup.Http.GoogleDrive
 
 
             return result;
+        }
+
+        public Task UploadDatabse(string fileName, string patch)
+        {
+            var isExit = Exists(fileName);
+            if (!isExit) CreateFolder(fileName);
+            var file = FileService.GetFileStream(patch);
+            UploadFile(file,fileName,string.Empty,string.Empty,"baakckcjdshjfs");
+            throw new NotImplementedException();
         }
     }
 }

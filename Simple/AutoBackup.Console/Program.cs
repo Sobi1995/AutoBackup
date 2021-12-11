@@ -1,6 +1,7 @@
 ﻿using AutoBackup.Core.Servises.Common;
 using AutoBackup.Database;
 using AutoBackup.DatabaseModel.Dto;
+using AutoBackup.Http.GoogleDrive;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -16,8 +17,9 @@ namespace AutoBackup.ConsoleApp
             var connectionDetiles=new GetConnectionConfigInput();
         
             Console.Write("Please enter the connection string : ");
-            connectionDetiles.DataBaseConnection = Console.ReadLine();
-            _backupService.BackupDatabase(connectionDetiles.DataBaseConnection, string.Empty,"asdasdasfcsa assa");
+            //connectionDetiles.DataBaseConnection = Console.ReadLine();
+            connectionDetiles.DataBaseConnection = "Server=.;Database=Semicolon;Trusted_Connection=True;MultipleActiveResultSets=true;";
+            _backupService.BackupDatabase(connectionDetiles.DataBaseConnection, @"F:\AutoBackup\", string.Empty);
     
          
 
@@ -28,7 +30,7 @@ namespace AutoBackup.ConsoleApp
        static ServiceProvider RegisterService() {
           return  new ServiceCollection()
                     .AddSingleton<IBackupService, BackupService>()
-            
+                    .AddSingleton<IGoogleDriveHttpService, GoogleDriveHttpService>()
                     .AddSingleton<IProgressBar, ProgressBar>()
                    .BuildServiceProvider();
         }

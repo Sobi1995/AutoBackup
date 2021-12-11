@@ -10,6 +10,7 @@
 	 
   <ItemGroup>
     <ProjectReference Include="..\AutoBackup.Core\AutoBackup.Core.csproj" />
+    <ProjectReference Include="..\AutoBackup.GoogleDrive\AutoBackup.Http.csproj" />
   </ItemGroup>
 
 </Project>

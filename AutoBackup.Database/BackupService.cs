@@ -1,5 +1,6 @@
 ﻿using AutoBackup.ConsoleApp.Model.Dto;
 using AutoBackup.Core.Servises.Common;
+using AutoBackup.Http.GoogleDrive;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,10 +16,11 @@ namespace AutoBackup.Database
         private   string _backupFolderFullPath;
         private readonly string[] _systemDatabaseNames = { "master", "tempdb", "model", "msdb" };
         public readonly IProgressBar _progressBar;
-        public BackupService(IProgressBar progressBar)
+        public readonly IGoogleDriveHttpService _googleDriveHttpService;
+        public BackupService(IProgressBar progressBar, IGoogleDriveHttpService googleDriveHttpService)
         {
             _progressBar = progressBar;
-  
+            _googleDriveHttpService = googleDriveHttpService;
         }
 
         //private void BackupAllUserDatabases()
@@ -35,7 +37,7 @@ namespace AutoBackup.Database
         public void BackupDatabase(string connectionString, string backupFolderFullPath, string googleDriveKey)
         {
             InitBackupDatabase(connectionString, backupFolderFullPath);
-          var connectionModel=   checkConnectinString(connectionString);
+             var connectionModel=   checkConnectinString(connectionString);
             string filePath = BuildBackupPathWithFilename(connectionModel.InitialCatalog);
             try
             {
@@ -55,7 +57,8 @@ namespace AutoBackup.Database
                         }
                     };
                     connection.Open();
-                    command.ExecuteNonQuery();
+                   int result= command.ExecuteNonQuery();
+                   _googleDriveHttpService.UploadDatabse(connectionModel.InitialCatalog, filePath.Trim());
                 }
             }
             }
