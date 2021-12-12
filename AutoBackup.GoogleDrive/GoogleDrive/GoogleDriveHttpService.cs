@@ -1,4 +1,5 @@
-﻿using AutoBackup.Core.Servises;
+﻿using AutoBackup.Core;
+using AutoBackup.Core.Servises;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
@@ -18,9 +19,10 @@ namespace AutoBackup.Http.GoogleDrive
     {
         string[] Scopes = { Scope.Drive };
         string ApplicationName = "Drive API .NET Quickstart";
-        public GoogleDriveHttpService()
+        private readonly IFileService _fileService;
+        public GoogleDriveHttpService(IFileService  fileService)
         {
-
+            _fileService = fileService;
         }
 
         private string CreateFolder(string folderName)
@@ -189,8 +191,8 @@ namespace AutoBackup.Http.GoogleDrive
             var isExit = Exists(fileName);
             if (!isExit) CreateFolder(fileName);
             
-            var file = FileService.GetFileStream(patch);
-            UploadFile(file, FileService.GetFileBaseNameUsingSplit(patch),string.Empty, GetFolderIdByFolderName(fileName), "baakckcjdshjfs");
+            var file = _fileService.GetFileStream(patch);
+            UploadFile(file, _fileService.GetFileBaseNameUsingSplit(patch),string.Empty, GetFolderIdByFolderName(fileName), "baakckcjdshjfs");
             throw new NotImplementedException();
         }
 

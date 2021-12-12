@@ -1,4 +1,5 @@
-﻿using AutoBackup.Core.Servises.Common;
+﻿using AutoBackup.Core.Servises;
+using AutoBackup.Core.Servises.Common;
 using AutoBackup.Database;
 using AutoBackup.DatabaseModel.Dto;
 using AutoBackup.Http.GoogleDrive;
@@ -19,7 +20,7 @@ namespace AutoBackup.ConsoleApp
             Console.Write("Please enter the connection string : ");
             //connectionDetiles.DataBaseConnection = Console.ReadLine();
             connectionDetiles.DataBaseConnection = "Server=.;Database=Coffeete_db;Trusted_Connection=True;MultipleActiveResultSets=true;";
-            _backupService.BackupDatabase(connectionDetiles.DataBaseConnection, @"D:\AutoBackup\", string.Empty);
+            _backupService.BackupDatabase(connectionDetiles.DataBaseConnection );
     
          
 
@@ -32,6 +33,7 @@ namespace AutoBackup.ConsoleApp
                     .AddSingleton<IBackupService, BackupService>()
                     .AddSingleton<IGoogleDriveHttpService, GoogleDriveHttpService>()
                     .AddSingleton<IProgressBar, ProgressBar>()
+                    .AddSingleton<IFileService, FileService>()
                    .BuildServiceProvider();
         }
 

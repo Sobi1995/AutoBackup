@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutoBackup.Database
+namespace AutoBackup.Core
 {
-  public  interface IBackupService
+    public static class  ExtensionMethod
     {
-        void BackupDatabase(string connectionString);
+     
     }
 }

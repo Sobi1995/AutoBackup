@@ -1,4 +1,5 @@
 ﻿using AutoBackup.ConsoleApp.Model.Dto;
+using AutoBackup.Core.Servises;
 using AutoBackup.Core.Servises.Common;
 using AutoBackup.Http.GoogleDrive;
 using System;
@@ -7,6 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace AutoBackup.Database
 {
@@ -17,10 +19,14 @@ namespace AutoBackup.Database
         private readonly string[] _systemDatabaseNames = { "master", "tempdb", "model", "msdb" };
         public readonly IProgressBar _progressBar;
         public readonly IGoogleDriveHttpService _googleDriveHttpService;
-        public BackupService(IProgressBar progressBar, IGoogleDriveHttpService googleDriveHttpService)
+
+        private readonly IFileService _fileService;
+        public BackupService(IProgressBar progressBar, IGoogleDriveHttpService googleDriveHttpService, IFileService fileService)
         {
             _progressBar = progressBar;
             _googleDriveHttpService = googleDriveHttpService;
+ 
+            _fileService = fileService;
         }
 
         //private void BackupAllUserDatabases()
@@ -34,10 +40,11 @@ namespace AutoBackup.Database
 
 
 
-        public void BackupDatabase(string connectionString, string backupFolderFullPath, string googleDriveKey)
+        public void BackupDatabase(string connectionString )
         {
-            InitBackupDatabase(connectionString, backupFolderFullPath);
+           
              var connectionModel=   checkConnectinString(connectionString);
+            InitBackupDatabase(connectionString, _fileService.CreateFolderInCurrent($"Temp_{connectionModel.InitialCatalog}"));
             string filePath = BuildBackupPathWithFilename(connectionModel.InitialCatalog);
             try
             {
