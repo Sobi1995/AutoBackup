@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -20,19 +21,47 @@ namespace AutoBackup.Core.Servises
             return fileBaseName;
         }
 
+        public string GetFileBaseJustName(string path)
+        {
+            string[] pathArr = path.Split('\\');
+            string[] fileArr = pathArr.Last().Split('.');
+            return fileArr.First().ToString();
+       
+        }
+
         public string CreateFolderInCurrent(string folderName)
         {
+          
             string currentPath = Directory.GetCurrentDirectory();
             if (!Directory.Exists(Path.Combine(currentPath, folderName)))
                 Directory.CreateDirectory(Path.Combine(currentPath, folderName));
             var fullPatch= $"{currentPath}\\{folderName}";
+            AllowPermission(fullPatch);
+            return fullPatch;
+        }
 
-            DirectoryInfo dInfo = new DirectoryInfo(fullPatch);
+        public string Zip(string source, string destination,string fileName)
+        {
+            ZipFile.CreateFromDirectory(source, $"{destination}\\{GetFileBaseJustName(fileName)}.zip", CompressionLevel.Optimal, true);
+            return $"{destination}\\{GetFileBaseJustName(fileName)}.zip";
+        }
+
+        public string CreateFolderInPath(string source, string folderName)
+        {
+          
+            if (!Directory.Exists(Path.Combine(source, folderName)))
+                Directory.CreateDirectory(Path.Combine(source, folderName));
+            var fullPatch = $"{source}\\{folderName}";
+            AllowPermission(fullPatch);
+            return fullPatch;
+        }
+
+        private void AllowPermission(string Patch)
+        {
+            DirectoryInfo dInfo = new DirectoryInfo(Patch);
             DirectorySecurity dSecurity = dInfo.GetAccessControl();
             dSecurity.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), FileSystemRights.FullControl, InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit, PropagationFlags.NoPropagateInherit, AccessControlType.Allow));
             dInfo.SetAccessControl(dSecurity);
-
-            return fullPatch;
         }
     }
 }

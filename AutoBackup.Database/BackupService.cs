@@ -1,4 +1,5 @@
 ﻿using AutoBackup.ConsoleApp.Model.Dto;
+using AutoBackup.Core.Model;
 using AutoBackup.Core.Servises;
 using AutoBackup.Core.Servises.Common;
 using AutoBackup.Http.GoogleDrive;
@@ -45,14 +46,13 @@ namespace AutoBackup.Database
            
              var connectionModel=   checkConnectinString(connectionString);
             InitBackupDatabase(connectionString, _fileService.CreateFolderInCurrent($"Temp_{connectionModel.InitialCatalog}"));
-            string filePath = BuildBackupPathWithFilename(connectionModel.InitialCatalog);
+
+            var filePath = BuildBackupPathWithFilename(connectionModel.InitialCatalog);
             try
             {
-
-           
             using (var connection = new SqlConnection(_connectionString))
             {
-                var query = String.Format("BACKUP DATABASE [{0}] TO DISK='{1}'", connectionModel.InitialCatalog, filePath.Trim());
+                var query = String.Format("BACKUP DATABASE [{0}] TO DISK='{1}'", connectionModel.InitialCatalog, filePath.Path+filePath.FileName);
            
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -65,7 +65,8 @@ namespace AutoBackup.Database
                     };
                     connection.Open();
                    int result= command.ExecuteNonQuery();
-                   _googleDriveHttpService.UploadDatabse(connectionModel.InitialCatalog, filePath.Trim());
+                  var zipFile= _fileService.Zip(filePath.Path, _backupFolderFullPath, filePath.FolderName);
+                    _googleDriveHttpService.UploadDatabse(connectionModel.InitialCatalog, zipFile);
                 }
             }
             }
@@ -104,11 +105,16 @@ namespace AutoBackup.Database
             return databases;
         }
 
-        private string BuildBackupPathWithFilename(string databaseName)
+        private BuildBackupPathWithFilenameModel BuildBackupPathWithFilename(string databaseName)
         {
-            string filename = string.Format("{0}-{1}.bak", databaseName, DateTime.Now.ToString("yyyy-MM-dd"));
-
-            return Path.Combine(_backupFolderFullPath, filename);
+            string filename = string.Format("{0}-{1}.bak", databaseName, DateTime.Now.ToString("HH-mm-ss"));
+            var folderName= DateTime.Now.ToString("MM-dd-yyyy");
+            var path=_fileService.CreateFolderInPath(_backupFolderFullPath, folderName + "\\");
+            return new BuildBackupPathWithFilenameModel() { 
+            FileName= filename,
+            Path=path,
+            FolderName= folderName
+            };  
         }
 
 

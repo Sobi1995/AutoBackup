@@ -12,5 +12,7 @@ namespace AutoBackup.Core.Servises
         Stream GetFileStream(string fileName);
         string GetFileBaseNameUsingSplit(string path);
         string CreateFolderInCurrent(string folderName);
+        string CreateFolderInPath(string source, string folderName);
+        string Zip(string source, string destination, string fileName);
     }
 }
