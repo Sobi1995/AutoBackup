@@ -18,8 +18,8 @@ namespace AutoBackup.ConsoleApp
         
             Console.Write("Please enter the connection string : ");
             //connectionDetiles.DataBaseConnection = Console.ReadLine();
-            connectionDetiles.DataBaseConnection = "Server=.;Database=Semicolon;Trusted_Connection=True;MultipleActiveResultSets=true;";
-            _backupService.BackupDatabase(connectionDetiles.DataBaseConnection, @"F:\AutoBackup\", string.Empty);
+            connectionDetiles.DataBaseConnection = "Server=.;Database=Coffeete_db;Trusted_Connection=True;MultipleActiveResultSets=true;";
+            _backupService.BackupDatabase(connectionDetiles.DataBaseConnection, @"D:\AutoBackup\", string.Empty);
     
          
 

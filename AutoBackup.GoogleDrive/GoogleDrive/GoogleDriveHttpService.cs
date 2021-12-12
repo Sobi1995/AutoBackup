@@ -26,6 +26,7 @@ namespace AutoBackup.Http.GoogleDrive
         private string CreateFolder(string folderName)
         {
             var service = GetService();
+           
             bool exists = Exists(folderName);
             if (exists)
                 return $"Sorry but the file {folderName} already exists!";
@@ -139,7 +140,8 @@ namespace AutoBackup.Http.GoogleDrive
             driveFile.Name = fileName;
             driveFile.Description = fileDescription;
             driveFile.MimeType = fileMime;
-            driveFile.Parents = new string[] { folder };
+            driveFile.FolderColorRgb = "FFE600";
+           driveFile.Parents = new string[] { folder };
 
 
             var request = service.Files.Create(driveFile, file, fileMime);
@@ -186,9 +188,26 @@ namespace AutoBackup.Http.GoogleDrive
         {
             var isExit = Exists(fileName);
             if (!isExit) CreateFolder(fileName);
+            
             var file = FileService.GetFileStream(patch);
-            UploadFile(file,fileName,string.Empty,string.Empty,"baakckcjdshjfs");
+            UploadFile(file, FileService.GetFileBaseNameUsingSplit(patch),string.Empty, GetFolderIdByFolderName(fileName), "baakckcjdshjfs");
             throw new NotImplementedException();
+        }
+
+
+        string GetFolderIdByFolderName(string folderName)
+        {
+            var service = GetService();
+            FilesResource.ListRequest listRequest = service.Files.List();
+            listRequest.PageSize = 10;
+            listRequest.Q = "mimeType = 'application/vnd.google-apps.folder' and name = '"+folderName+"'";
+            listRequest.Fields = "nextPageToken, files(id, name)";
+
+            IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute()
+            .Files;
+            return files.First().Id;
+
+       
         }
     }
 }
