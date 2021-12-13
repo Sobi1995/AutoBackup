@@ -29,7 +29,6 @@ namespace AutoBackup.Database
  
             _fileService = fileService;
         }
-
         //private void BackupAllUserDatabases()
         //{
         //    foreach (string databaseName in GetAllUserDatabases())
@@ -37,15 +36,11 @@ namespace AutoBackup.Database
         //        //BackupDatabase(databaseName);
         //    }
         //}
-
-
-
-
         public void BackupDatabase(string connectionString )
         {
            
              var connectionModel=   checkConnectinString(connectionString);
-            InitBackupDatabase(connectionString, _fileService.CreateFolderInCurrent($"Temp_{connectionModel.InitialCatalog}"));
+             InitBackupDatabase(connectionString, _fileService.CreateFolderInCurrent($"Temp_{connectionModel.InitialCatalog}"));
 
             var filePath = BuildBackupPathWithFilename(connectionModel.InitialCatalog);
             try
@@ -64,9 +59,14 @@ namespace AutoBackup.Database
                         }
                     };
                     connection.Open();
+                        Console.WriteLine($"Please wait to Backup {connectionModel.InitialCatalog} database",ConsoleColor.Yellow);
                    int result= command.ExecuteNonQuery();
-                  var zipFile= _fileService.Zip(filePath.Path, _backupFolderFullPath, filePath.FolderName);
-                    _googleDriveHttpService.UploadDatabse(connectionModel.InitialCatalog, zipFile);
+                        Console.WriteLine($"success .the addrress od dabatabse backup is  {filePath.Path + filePath.FileName} ",ConsoleColor.Green);
+
+                        Console.WriteLine($"Please wait to zip {connectionModel.InitialCatalog} database", ConsoleColor.Yellow);
+                        var zipFile= _fileService.Zip(filePath.Path, _backupFolderFullPath, filePath.FolderName);
+                        Console.WriteLine($"success .the addrress of zip dabatabse   is  {_backupFolderFullPath} ", ConsoleColor.Green);
+                        //_googleDriveHttpService.UploadDatabse(connectionModel.InitialCatalog, zipFile);
                 }
             }
             }
@@ -76,7 +76,6 @@ namespace AutoBackup.Database
                 throw new System.ArgumentException(ex.Message);
             }
         }
-
         private IEnumerable<string> GetAllUserDatabases()
         {
             var databases = new List<String>();
@@ -104,11 +103,10 @@ namespace AutoBackup.Database
 
             return databases;
         }
-
         private BuildBackupPathWithFilenameModel BuildBackupPathWithFilename(string databaseName)
         {
             string filename = string.Format("{0}-{1}.bak", databaseName, DateTime.Now.ToString("HH-mm-ss"));
-            var folderName= DateTime.Now.ToString("MM-dd-yyyy");
+            var folderName= DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
             var path=_fileService.CreateFolderInPath(_backupFolderFullPath, folderName + "\\");
             return new BuildBackupPathWithFilenameModel() { 
             FileName= filename,
@@ -116,16 +114,11 @@ namespace AutoBackup.Database
             FolderName= folderName
             };  
         }
-
-
-
         private void InitBackupDatabase(string connectionString, string backupFolderFullPath)
         {
             _connectionString = connectionString;
             _backupFolderFullPath = backupFolderFullPath;
         }
-
-
         private ConnectionDetilesModel checkConnectinString(string connectionString)
         {
 
@@ -150,7 +143,6 @@ namespace AutoBackup.Database
             }
 
         }
-
         private ConnectionDetilesModel GetConnectionDetiles(string connection)
         {
 
