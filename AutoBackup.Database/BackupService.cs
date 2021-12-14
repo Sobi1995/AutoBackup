@@ -20,14 +20,20 @@ namespace AutoBackup.Database
         private readonly string[] _systemDatabaseNames = { "master", "tempdb", "model", "msdb" };
         public readonly IProgressBar _progressBar;
         public readonly IGoogleDriveHttpService _googleDriveHttpService;
+        public readonly IMeesageService _meesageService;
+
 
         private readonly IFileService _fileService;
-        public BackupService(IProgressBar progressBar, IGoogleDriveHttpService googleDriveHttpService, IFileService fileService)
+        public BackupService(
+            IProgressBar progressBar, 
+            IGoogleDriveHttpService googleDriveHttpService,
+            IFileService fileService,
+            IMeesageService meesageService)
         {
             _progressBar = progressBar;
             _googleDriveHttpService = googleDriveHttpService;
- 
             _fileService = fileService;
+            _meesageService = meesageService;
         }
         //private void BackupAllUserDatabases()
         //{
@@ -55,17 +61,17 @@ namespace AutoBackup.Database
                     {
                         foreach (var element in args.Errors.OfType<SqlError>())
                         {
-                            Console.WriteLine($"Class: {element.Class} LineNumber: {element.LineNumber} Message: {element.Message} Number: {element.Number} Procedure: {element.Procedure}");
+                            _meesageService.Message($"Class: {element.Class} LineNumber: {element.LineNumber} Message: {element.Message} Number: {element.Number} Procedure: {element.Procedure}",ConsoleColor.Green);
                         }
                     };
                     connection.Open();
-                        Console.WriteLine($"Please wait to Backup {connectionModel.InitialCatalog} database",ConsoleColor.Yellow);
+                        _meesageService.Message($"Please wait to Backup {connectionModel.InitialCatalog} database",ConsoleColor.Yellow);
                    int result= command.ExecuteNonQuery();
-                        Console.WriteLine($"success .the addrress od dabatabse backup is  {filePath.Path + filePath.FileName} ",ConsoleColor.Green);
+                        _meesageService.Message($"success .the addrress od dabatabse backup is  {filePath.Path + filePath.FileName} ",ConsoleColor.Green);
 
-                        Console.WriteLine($"Please wait to zip {connectionModel.InitialCatalog} database", ConsoleColor.Yellow);
+                        _meesageService.Message($"Please wait to zip {connectionModel.InitialCatalog} database", ConsoleColor.Yellow);
                         var zipFile= _fileService.Zip(filePath.Path, _backupFolderFullPath, filePath.FolderName);
-                        Console.WriteLine($"success .the addrress of zip dabatabse   is  {_backupFolderFullPath} ", ConsoleColor.Green);
+                        _meesageService.Message($"success .the addrress of zip dabatabse   is  {_backupFolderFullPath} ", ConsoleColor.Green);
                         //_googleDriveHttpService.UploadDatabse(connectionModel.InitialCatalog, zipFile);
                 }
             }
@@ -73,7 +79,7 @@ namespace AutoBackup.Database
             catch (Exception ex)
             {
 
-                throw new System.ArgumentException(ex.Message);
+                _meesageService.Message(ex.Message,ConsoleColor.Red);
             }
         }
         private IEnumerable<string> GetAllUserDatabases()

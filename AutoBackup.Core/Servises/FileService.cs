@@ -42,7 +42,8 @@ namespace AutoBackup.Core.Servises
 
         public string Zip(string source, string destination,string fileName)
         {
-            ZipFile.CreateFromDirectory(source, $"{destination}\\{GetFileBaseJustName(fileName)}.zip", CompressionLevel.Optimal, true);
+    
+            ZipFile.CreateFromDirectory(source, $"{destination}\\{GetFileBaseJustName(fileName)}.zip", CompressionLevel.Optimal,false);
             return $"{destination}\\{GetFileBaseJustName(fileName)}.zip";
         }
 
@@ -62,6 +63,17 @@ namespace AutoBackup.Core.Servises
             DirectorySecurity dSecurity = dInfo.GetAccessControl();
             dSecurity.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), FileSystemRights.FullControl, InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit, PropagationFlags.NoPropagateInherit, AccessControlType.Allow));
             dInfo.SetAccessControl(dSecurity);
+        }
+
+        public void DeleteFolder(string sourse)
+        {
+      
+           System.IO.Directory.Delete(sourse, true);
+        }
+
+        public void DeleteFile(string sourse)
+        {
+            System.IO.File.Delete(sourse);
         }
     }
 }

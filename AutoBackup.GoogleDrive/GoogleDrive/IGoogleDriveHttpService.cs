@@ -8,6 +8,6 @@ namespace AutoBackup.Http.GoogleDrive
 {
   public  interface IGoogleDriveHttpService
     {
-        Task UploadDatabse(string fileName,string patch);
+        void UploadDatabse(string fileName,string patch);
     }
 }

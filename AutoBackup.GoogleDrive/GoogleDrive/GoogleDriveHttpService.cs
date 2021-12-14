@@ -186,14 +186,17 @@ namespace AutoBackup.Http.GoogleDrive
             return result;
         }
 
-        public Task UploadDatabse(string fileName, string patch)
+        public void UploadDatabse(string fileName, string patch)
         {
             var isExit = Exists(fileName);
             if (!isExit) CreateFolder(fileName);
-            
+            var fileNameZip = _fileService.GetFileBaseNameUsingSplit(patch);
+          
             var file = _fileService.GetFileStream(patch);
-            UploadFile(file, _fileService.GetFileBaseNameUsingSplit(patch),string.Empty, GetFolderIdByFolderName(fileName), "baakckcjdshjfs");
-            throw new NotImplementedException();
+            UploadFile(file, fileNameZip, string.Empty, GetFolderIdByFolderName(fileName), "baakckcjdshjfs");
+
+            //_fileService.DeleteFolder($"{Directory.GetCurrentDirectory()}\\Temp_{fileName}");
+          
         }
 
 

@@ -34,6 +34,7 @@ namespace AutoBackup.ConsoleApp
                     .AddSingleton<IGoogleDriveHttpService, GoogleDriveHttpService>()
                     .AddSingleton<IProgressBar, ProgressBar>()
                     .AddSingleton<IFileService, FileService>()
+                    .AddSingleton<IMeesageService, MeesageService>()
                    .BuildServiceProvider();
         }
 
