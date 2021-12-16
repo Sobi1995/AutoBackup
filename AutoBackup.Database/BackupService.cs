@@ -21,7 +21,7 @@ namespace AutoBackup.Database
         public readonly IProgressBar _progressBar;
         public readonly IGoogleDriveHttpService _googleDriveHttpService;
         public readonly IMeesageService _meesageService;
-
+      
 
         private readonly IFileService _fileService;
         public BackupService(
@@ -34,6 +34,15 @@ namespace AutoBackup.Database
             _googleDriveHttpService = googleDriveHttpService;
             _fileService = fileService;
             _meesageService = meesageService;
+          _meesageService.Message(@"
+    _         _         ____             _                
+   / \  _   _| |_ ___  | __ )  __ _  ___| | ___   _ _ __  
+  / _ \| | | | __/ _ \ |  _ \ / _` |/ __| |/ / | | | '_ \ 
+ / ___ \ |_| | || (_)  | |_) | (_| | (__|   <| |_| | |_) |
+/_/   \_\__,_|\__\___/ |____/ \__,_|\___|_|\_\\__,_| .__/ 
+                                                  |_|    
+",ConsoleColor.Blue);
+
         }
         //private void BackupAllUserDatabases()
         //{
@@ -44,8 +53,7 @@ namespace AutoBackup.Database
         //}
         public void BackupDatabase(string connectionString )
         {
-           
-             var connectionModel=   checkConnectinString(connectionString);
+             var connectionModel=checkConnectinString(connectionString);
              InitBackupDatabase(connectionString, _fileService.CreateFolderInCurrent($"Temp_{connectionModel.InitialCatalog}"));
 
             var filePath = BuildBackupPathWithFilename(connectionModel.InitialCatalog);
@@ -59,20 +67,21 @@ namespace AutoBackup.Database
                 {
                     connection.InfoMessage += (sender, args) =>
                     {
-                        foreach (var element in args.Errors.OfType<SqlError>())
-                        {
-                            _meesageService.Message($"Class: {element.Class} LineNumber: {element.LineNumber} Message: {element.Message} Number: {element.Number} Procedure: {element.Procedure}",ConsoleColor.Green);
-                        }
+                        //foreach (var element in args.Errors.OfType<SqlError>())
+                        //{
+                        //    _meesageService.Message($"Class: {element.Class} LineNumber: {element.LineNumber} Message: {element.Message} Number: {element.Number} Procedure: {element.Procedure}",ConsoleColor.Green);
+                        //}
                     };
-                    connection.Open();
+                         connection.Open();
                         _meesageService.Message($"Please wait to Backup {connectionModel.InitialCatalog} database",ConsoleColor.Yellow);
-                   int result= command.ExecuteNonQuery();
+                         int result= command.ExecuteNonQuery();
                         _meesageService.Message($"success .the addrress od dabatabse backup is  {filePath.Path + filePath.FileName} ",ConsoleColor.Green);
 
                         _meesageService.Message($"Please wait to zip {connectionModel.InitialCatalog} database", ConsoleColor.Yellow);
                         var zipFile= _fileService.Zip(filePath.Path, _backupFolderFullPath, filePath.FolderName);
+                        _fileService.DeleteFolder(filePath.Path);
                         _meesageService.Message($"success .the addrress of zip dabatabse   is  {_backupFolderFullPath} ", ConsoleColor.Green);
-                        //_googleDriveHttpService.UploadDatabse(connectionModel.InitialCatalog, zipFile);
+                        _googleDriveHttpService.UploadDatabse(connectionModel.InitialCatalog, zipFile);
                 }
             }
             }
@@ -100,13 +109,10 @@ namespace AutoBackup.Database
             foreach (DataRow row in databasesTable.Rows)
             {
                 string databaseName = row["database_name"].ToString();
-
                 if (_systemDatabaseNames.Contains(databaseName))
                     continue;
-
                 databases.Add(databaseName);
             }
-
             return databases;
         }
         private BuildBackupPathWithFilenameModel BuildBackupPathWithFilename(string databaseName)
@@ -137,7 +143,6 @@ namespace AutoBackup.Database
                     {
                         connection.Open();
                         var isConnect = (command.ExecuteScalar() != DBNull.Value);
-                        Console.WriteLine("Connection is valid ");
                         return GetConnectionDetiles(connectionString);
                     }
                 }

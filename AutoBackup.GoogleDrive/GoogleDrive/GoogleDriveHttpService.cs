@@ -133,7 +133,7 @@ namespace AutoBackup.Http.GoogleDrive
 
         }
 
-        private string UploadFile(Stream file, string fileName, string fileMime, string folder, string fileDescription)
+        private async Task<string> UploadFile(Stream file, string fileName, string fileMime, string folder, string fileDescription)
         {
             DriveService service = GetService();
 
@@ -148,14 +148,25 @@ namespace AutoBackup.Http.GoogleDrive
 
             var request = service.Files.Create(driveFile, file, fileMime);
             request.Fields = "id";
+            request.ProgressChanged += UploadProgessEvent;
+        
 
-            var response = request.Upload();
+            var response = await request.UploadAsync();
+       
             if (response.Status != Google.Apis.Upload.UploadStatus.Completed)
                 throw response.Exception;
 
             return request.ResponseBody.Id;
         }
-
+        private void UploadProgessEvent(Google.Apis.Upload.IUploadProgress obj)
+        {
+         
+         
+            if (obj.Status == Google.Apis.Upload.UploadStatus.Uploading)
+            {
+                Console.WriteLine((obj.BytesSent * 100) / (5987426));
+            }
+        }
         private void DeleteFile(string fileId)
         {
             var service = GetService();
