@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{60BC766C-C08
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "simple", "simple", "{3C9D9BA9-6ED9-4F8D-8DF6-E6E1B54D64E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoBackup.Core", "src\lib\AutoBackup.Core\AutoBackup.Core.csproj", "{C42609B3-8E93-435E-9C59-6356DCE2ABBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoBackup", "src\lib\AutoBackup.Core\AutoBackup.csproj", "{C42609B3-8E93-435E-9C59-6356DCE2ABBD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoBackup.Database", "src\lib\AutoBackup.Database\AutoBackup.Database.csproj", "{574497DA-4D0D-4609-8C6F-933FA80F2B55}"
 EndProject
