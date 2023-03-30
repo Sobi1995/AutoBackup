@@ -8,8 +8,4 @@
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.55.0.2502" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AutoBackup.Core\AutoBackup.csproj" />
-  </ItemGroup>
-
 </Project>

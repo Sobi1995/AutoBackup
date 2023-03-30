@@ -17,4 +17,9 @@
     <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AutoBackup.Database\AutoBackup.Database.csproj" />
+    <ProjectReference Include="..\AutoBackup.GoogleDrive\AutoBackup.Http.csproj" />
+  </ItemGroup>
+
 </Project>

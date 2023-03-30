@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutoBackup.Core
+namespace AutoBackup.Model
 {
-    public static class  ExtensionMethod
+    public class AutoBackupOption
     {
-     
     }
 }
